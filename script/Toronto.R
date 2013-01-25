@@ -1,7 +1,7 @@
 source('script/fetch.R')
 source('script/screen.R')
 source('script/plot.R')
-source('script/main.R')
+source('script/util.R')
 
 scrape.symbols <- function() {
   TSX <- read.csv("resources/TSX.csv", header=TRUE)  # TODO scrape from TSX site
