@@ -3,17 +3,16 @@ require(RCurl)
 
 source('script/fetch.R')
 
-max.paginate <- 34
-
-curl  =  getCurlHandle(cookiefile = '/tmp/Rcookie.txt' , 
-                       useragent =  "Mozilla/5.0 (Windows; U; Windows NT 5.1; en - US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6",
-                       header = F,
-                       verbose = TRUE,
-                       netrc = TRUE,
-                       maxredirs = as.integer(20),
-                       followlocation = TRUE)
-
 fetch.symbols <- function(url) {
+  max.paginate <- 34
+  curl <- getCurlHandle(cookiefile = '/tmp/Rcookie.txt' , 
+                        useragent =  "Mozilla/5.0 (Windows; U; Windows NT 5.1; en - US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6",
+                        header = F,
+                        verbose = TRUE,
+                        netrc = TRUE,
+                        maxredirs = as.integer(20),
+                        followlocation = TRUE)
+  
   page <- getURL(url, curl=curl)
   tree <- htmlTreeParse(page, useInternalNodes=TRUE)
   xpath <- "//table[@class = 'table_dati']/tbody"
