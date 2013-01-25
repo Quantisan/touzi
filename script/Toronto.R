@@ -20,7 +20,7 @@ update.vanguard.expense <- function(D) {
   return(D)
 }
 
-TSX <- load.symbols("Toronto")
+TSX <- load.symbols("data/Toronto_symbols.RData", scrape.symbols)
 TSX <- update.vanguard.expense(TSX)
 TSX <- subset(TSX, type == "Exchange Traded Fund" & avg.trading.value > 0)
 

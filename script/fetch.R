@@ -2,9 +2,8 @@ require('quantmod')
 require(XML)
 
 # Bootstrap dataset by going off to scrape pages and data from web
-bootstrap.symbols <- function(script.file, data.file) {
-  source(script.file, local=TRUE)
-  D <- scrape.symbols()
+bootstrap.symbols <- function(scrapper, data.file) {
+  D <- scrapper()
   source('script/fetch.R', local=TRUE)
   D <- merge(D, fetch.trade.summary(D$Symbol), by="Symbol")
   D <- merge(D, fetch.yahoo.profiles(D$Symbol), by="Symbol")
@@ -13,13 +12,10 @@ bootstrap.symbols <- function(script.file, data.file) {
 }
 
 # Tries to load data from file first otherwise go fetch data.
-load.symbols <- function(exchange) {
-  data.file <- paste("data/", exchange, "_symbols.RData", sep="")
-  script.file <- paste("script/", exchange, ".R", sep="")
-  
+load.symbols <- function(data.file, scrapper) {
   tried <- try(load(data.file), silent = TRUE)
   if(inherits(tried, "try-error")) {
-    return(bootstrap.symbols(script.file, data.file))    ## ERROR infinite loop
+    return(bootstrap.symbols(scrapper, data.file))
   } else {
     return(local(get(load(data.file))))
   }

@@ -40,5 +40,5 @@ scrape.symbols <- function() {
   return(Table[,fields])
 }
 
-LSE <- load.symbols("London")
+LSE <- load.symbols("data/London_symbols.RData", scrape.symbols)
 #LSE <- subset(LSE, type == "Exchange Traded Fund" & avg.trading.value > 0)
