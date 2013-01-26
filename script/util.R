@@ -21,4 +21,3 @@ fun.xts <- function(FUN, symbols, metric.fun=ClCl, ...) {
 
 cov.xts <- function(symbols) fun.xts(cov, symbols)
 mean.xts <- function(symbols) fun.xts(colMeans, symbols)
-return.xts <- function(symbols, ...) fun.xts(Return.portfolio, symbols, ...)

@@ -1,3 +1,11 @@
+require(PerformanceAnalytics)
+
+# Calculates weighted returns of specified symbols
+return.xts <- function(symbols, ...) {
+  source('script/util.R', local=TRUE)
+  fun.xts(Return.portfolio, symbols, ...)
+}
+
 # portfolio.r
 # 
 # Functions for portfolio analysis
