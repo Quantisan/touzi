@@ -14,10 +14,11 @@ align.xts <- function(symbols, FUN=ClCl) {
   return(na.omit(d))
 }
 
-fun.xts <- function(FUN, symbols, metric.fun=ClCl) {
+fun.xts <- function(FUN, symbols, metric.fun=ClCl, ...) {
   d <- align.xts(symbols, metric.fun)
-  FUN(d)
+  FUN(d, ...)
 }
 
 cov.xts <- function(symbols) fun.xts(cov, symbols)
 mean.xts <- function(symbols) fun.xts(colMeans, symbols)
+return.xts <- function(symbols, ...) fun.xts(Return.portfolio, symbols, ...)
