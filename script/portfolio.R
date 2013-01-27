@@ -1,4 +1,5 @@
 require(PerformanceAnalytics)
+require(quadprog)
 
 # Calculates weighted returns of specified symbols
 return.xts <- function(symbols, ...) {
@@ -146,37 +147,37 @@ efficient.portfolio <-
     ans
   }
 
-globalMin.portfolio <-
-  function(er, cov.mat)
-  {
-    # Compute global minimum variance portfolio
-    #
-    # inputs:
-    # er				N x 1 vector of expected returns
-    # cov.mat		N x N return covariance matrix
-    #
-    # output is portfolio object with the following elements
-    # call			original function call
-    # er				portfolio expected return
-    # sd				portfolio standard deviation
-    # weights		N x 1 vector of portfolio weights
-    call <- match.call()
-    
-    #
-    # check for valid inputs
-    #
-    asset.names <- names(er)
-    er <- as.vector(er)					# assign names if none exist
-    cov.mat <- as.matrix(cov.mat)
-    if(length(er) != nrow(cov.mat))
-      stop("invalid inputs")
-    if(any(diag(chol(cov.mat)) <= 0))
-      stop("Covariance matrix not positive definite")
-    # remark: could use generalized inverse if cov.mat is positive semi-definite
-    
-    #
-    # compute global minimum portfolio
-    #
+globalMin.portfolio <- function(er, cov.mat, allow.short=TRUE)
+{
+  # Compute global minimum variance portfolio
+  #
+  # inputs:
+  # er				N x 1 vector of expected returns
+  # cov.mat		N x N return covariance matrix
+  #
+  # output is portfolio object with the following elements
+  # call			original function call
+  # er				portfolio expected return
+  # sd				portfolio standard deviation
+  # weights		N x 1 vector of portfolio weights
+  call <- match.call()
+  
+  #
+  # check for valid inputs
+  #
+  asset.names <- names(er)
+  er <- as.vector(er)					# assign names if none exist
+  cov.mat <- as.matrix(cov.mat)
+  if(length(er) != nrow(cov.mat))
+    stop("invalid inputs")
+  if(any(diag(chol(cov.mat)) <= 0))
+    stop("Covariance matrix not positive definite")
+  # remark: could use generalized inverse if cov.mat is positive semi-definite
+  
+  #
+  # compute global minimum portfolio
+  #
+  if(allow.short) {
     cov.mat.inv <- solve(cov.mat)
     one.vec <- rep(1,length(er))
     #  w.gmin <- cov.mat.inv %*% one.vec/as.vector(one.vec %*% cov.mat.inv %*% one.vec)
@@ -185,17 +186,29 @@ globalMin.portfolio <-
     names(w.gmin) <- asset.names
     er.gmin <- crossprod(w.gmin,er)
     sd.gmin <- sqrt(t(w.gmin) %*% cov.mat %*% w.gmin)
-    gmin.port <- list("call" = call,
-                      "er" = as.vector(er.gmin),
-                      "sd" = as.vector(sd.gmin),
-                      "weights" = w.gmin)
-    class(gmin.port) <- "portfolio"
-    gmin.port
+  } else {
+    len <- length(er)
+    D.mat <- 2*cov.mat
+    d.vec <- rep(0, len)
+    A.mat <- cbind(rep(1,len), diag(len))
+    b.vec <- c(1, rep(0,len))
+    qp.out <- solve.QP(Dmat=D.mat, dvec=d.vec, Amat=A.mat, bvec=b.vec, meq=1)
+    w.gmin <- as.vector(qp.out$solution)
+    names(w.gmin) <- asset.names
+    er.gmin <- as.numeric(crossprod(w.gmin, er))
+    sd.gmin <- sqrt(as.numeric(qp.out$value))
   }
+  gmin.port <- list("call" = call,
+                    "er" = as.vector(er.gmin),
+                    "sd" = as.vector(sd.gmin),
+                    "weights" = w.gmin)
+  class(gmin.port) <- "portfolio"
+  gmin.port
+}
 
 
 tangency.portfolio <- 
-  function(er,cov.mat,risk.free)
+function(er,cov.mat,risk.free)
   {
     # compute tangency portfolio
     #
