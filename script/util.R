@@ -1,5 +1,5 @@
 get.sym <- function(D, symbol) {
-  D[D$Symbol == symbol,]
+  D[D$Symbol %in% symbol,]
 }
 
 align.xts <- function(symbols, FUN=ClCl) {
