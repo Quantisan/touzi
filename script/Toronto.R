@@ -1,6 +1,7 @@
 source('script/fetch.R')
 source('script/screen.R')
 source('script/plot.R')
+source('script/portfolio.R')
 source('script/util.R')
 
 scrape.symbols <- function() {
@@ -34,3 +35,14 @@ plot.profiles(T, "TSX Screened Funds")
 load.quotes(T$Symbol)
 load.quotes(vg.T$Symbol)
 load.quotes("XIU.TO")
+
+portfolio.rets <- align.xts(c("XIU.TO"))
+rets.vg <- return.xts(vg.T$Symbol)
+names(rets.vg) <- "Vanguard Equal"
+portfolio.rets <- na.omit(merge(portfolio.rets, rets.vg))
+rets.vg <- return.xts(T$Symbol)
+names(rets.vg) <- "Screened Equal"
+portfolio.rets <- na.omit(merge(portfolio.rets, rets.vg))
+
+charts.PerformanceSummary(portfolio.rets)
+chart.RiskReturnScatter(portfolio.rets, Rf=0.01, add.sharpe=c(1,2,3))
