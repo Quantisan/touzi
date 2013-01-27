@@ -2,9 +2,17 @@ require(PerformanceAnalytics)
 require(quadprog)
 
 # Calculates weighted returns of specified symbols
-return.xts <- function(symbols, ...) {
+return.xts <- function(symbols, periodReturn=weeklyReturn, weights=NULL, ...) {
   source('script/util.R', local=TRUE)
-  fun.xts(Return.portfolio, symbols, ...)
+  if (length(symbols) == 1) {
+    ret <- periodReturn((get(symbols[1])))
+    names(ret) <- symbols[1]    
+  }
+  else {
+    R <- align.xts(symbols, FUN=periodReturn)
+    ret <- Return.portfolio(R, weights=weights)
+  }
+  return(ret)
 }
 
 # Given lists of symbols, return each of the portfolio's return
@@ -127,7 +135,7 @@ efficient.portfolio <-
     if(any(diag(chol(cov.mat)) <= 0))
       stop("Covariance matrix not positive definite")
     # remark: could use generalized inverse if cov.mat is positive semidefinite
-    
+
     #
     # compute efficient portfolio
     #
