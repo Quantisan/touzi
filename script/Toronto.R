@@ -41,4 +41,4 @@ portfolio.rets <- portfolio.returns("XIU.TO",
                                     vg.T$Symbol, T$Symbol)
                                     
 charts.PerformanceSummary(portfolio.rets)
-chart.RiskReturnScatter(portfolio.rets, Rf=0.01, add.sharpe=c(1,2,3))
+chart.RiskReturnScatter(portfolio.rets, Rf=0.015, add.sharpe=c(1,2,3)) ## axes tick labels are wrong

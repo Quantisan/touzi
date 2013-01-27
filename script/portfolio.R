@@ -1,8 +1,20 @@
 require(PerformanceAnalytics)
 require(quadprog)
 
+expected.return <- function(symbols) {
+  ret <- align.xts(symbols, FUN=weeklyReturn)
+  cm <- colMeans(ret)
+  return((1 + cm)^52 - 1)  ## weekly -> annual
+}
+
+# Covariance of the weekly returns
+cov.return <- function(symbols) {
+  ret <- align.xts(symbols, FUN=weeklyReturn)
+  cov(ret)
+}
+
 # Calculates weighted returns of specified symbols
-return.xts <- function(symbols, periodReturn=weeklyReturn, weights=NULL, ...) {
+portfolio.return <- function(symbols, periodReturn=weeklyReturn, weights=NULL, ...) {
   source('script/util.R', local=TRUE)
   if (length(symbols) == 1) {
     ret <- periodReturn((get(symbols[1])))
@@ -26,10 +38,10 @@ return.xts <- function(symbols, periodReturn=weeklyReturn, weights=NULL, ...) {
 # portfolio.rets <- portfolio.returns("XIU.TO", names=c("Vanguard Equal", "Screened Equal"), vg.T$Symbol, T$Symbol)
 #
 portfolio.returns <- function(index.symbol, names, ...) {
-  portfolio.rets <- align.xts(c(index.symbol))
+  portfolio.rets <- portfolio.return(c(index.symbol))
   portfolios <- list(...)
   for(i in 1:length(portfolios)) {
-    ret <- return.xts(portfolios[[i]])
+    ret <- portfolio.return(portfolios[[i]])
     colnames(ret) <- names[i]
     portfolio.rets <- na.omit(merge(portfolio.rets, ret))
   }
