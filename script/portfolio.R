@@ -6,6 +6,27 @@ return.xts <- function(symbols, ...) {
   fun.xts(Return.portfolio, symbols, ...)
 }
 
+# Given lists of symbols, return each of the portfolio's return
+#
+# Arguments:
+# index.symbol -- a string symbol for the representative index
+# names -- a list of names for the portfolios
+# ... -- lists of symbols
+#
+# Example:
+# portfolio.rets <- portfolio.returns("XIU.TO", names=c("Vanguard Equal", "Screened Equal"), vg.T$Symbol, T$Symbol)
+#
+portfolio.returns <- function(index.symbol, names, ...) {
+  portfolio.rets <- align.xts(c(index.symbol))
+  portfolios <- list(...)
+  for(i in 1:length(portfolios)) {
+    ret <- return.xts(portfolios[[i]])
+    colnames(ret) <- names[i]
+    portfolio.rets <- na.omit(merge(portfolio.rets, ret))
+  }
+  return(portfolio.rets)
+}
+
 # portfolio.r
 # 
 # Functions for portfolio analysis

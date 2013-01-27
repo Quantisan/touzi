@@ -36,13 +36,9 @@ load.quotes(T$Symbol)
 load.quotes(vg.T$Symbol)
 load.quotes("XIU.TO")
 
-portfolio.rets <- align.xts(c("XIU.TO"))
-rets.vg <- return.xts(vg.T$Symbol)
-names(rets.vg) <- "Vanguard Equal"
-portfolio.rets <- na.omit(merge(portfolio.rets, rets.vg))
-rets.vg <- return.xts(T$Symbol)
-names(rets.vg) <- "Screened Equal"
-portfolio.rets <- na.omit(merge(portfolio.rets, rets.vg))
-
+portfolio.rets <- portfolio.returns("XIU.TO", 
+                                    names=c("Vanguard Equal", "Screened Equal"),
+                                    vg.T$Symbol, T$Symbol)
+                                    
 charts.PerformanceSummary(portfolio.rets)
 chart.RiskReturnScatter(portfolio.rets, Rf=0.01, add.sharpe=c(1,2,3))
