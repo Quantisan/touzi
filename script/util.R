@@ -18,3 +18,12 @@ fun.xts <- function(FUN, symbols, metric.fun=ClCl, ...) {
   d <- align.xts(symbols, metric.fun)
   FUN(d, ...)
 }
+
+union.many <- function(...) {
+  args <- list(...)
+  out <- args[[1]]
+  for(i in 2:length(args)) {
+    out <- union(out, args[[i]])
+  }
+  return(out)
+}

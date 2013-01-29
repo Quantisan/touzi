@@ -54,15 +54,16 @@ cat("Efficient MinVar Regular Funds:\n")
 print(sort(epf.T$weights[epf.T$weights > 0], decreasing=TRUE))
 
 # Union top symbols
-sym.opt <- names(sort(pf.vg$weights, decreasing=TRUE)[1:3])
-sym.opt <- union(sym.opt,  names(sort(epf.vg$weights, decreasing=TRUE)[1:3]))
-sym.opt <- union(sym.opt,  names(sort(pf.T$weights, decreasing=TRUE)[1:3]))
-sym.opt <- union(sym.opt,  names(sort(epf.T$weights, decreasing=TRUE)[1:3]))
-get.sym(TSX, sym.opt)[, c("Symbol", "Name", "category")]
+sym.opt <- union.many(names(sort(pf.vg$weights, decreasing=TRUE)[1:3]),
+                      names(sort(epf.vg$weights, decreasing=TRUE)[1:3]),
+                      names(sort(pf.T$weights, decreasing=TRUE)[1:3]),
+                      names(sort(epf.T$weights, decreasing=TRUE)[1:3]))
+get.sym(TSX, sym.opt)[, c("Symbol", "Name", "category")]  # print final funds
 
 # Last screen out of top symbols
-epf <- efficient.portfolio(expected.return(sym.opt), cov.return(sym.opt), 0.07, shorts=FALSE)
-final.syms <- c("CPD.TO", "CLF.TO", "VEE.TO") # names(sort(epf$weights, decreasing=TRUE)[1:5])
+epf <- efficient.portfolio(expected.return(sym.opt), cov.return(sym.opt), 0.08, shorts=FALSE)
+sort(epf$weights, decreasing=TRUE)
+final.syms <- c("CPD.TO", "CLF.TO", "VEE.TO")
 final.weights <- c(0.50, 0.30, 0.20)
 
 # Plot portfolios
