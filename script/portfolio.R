@@ -37,11 +37,11 @@ portfolio.return <- function(symbols, periodReturn=weeklyReturn, weights=NULL, .
 # Example:
 # portfolio.rets <- portfolio.returns("XIU.TO", names=c("Vanguard Equal", "Screened Equal"), vg.T$Symbol, T$Symbol)
 #
-portfolio.returns <- function(index.symbol, names, ...) {
+portfolio.returns <- function(index.symbol, names, weights, ...) {
   portfolio.rets <- portfolio.return(c(index.symbol))
   portfolios <- list(...)
   for(i in 1:length(portfolios)) {
-    ret <- portfolio.return(portfolios[[i]])
+    ret <- portfolio.return(symbols=portfolios[[i]], weights=weights[[i]])
     colnames(ret) <- names[i]
     portfolio.rets <- na.omit(merge(portfolio.rets, ret))
   }
