@@ -63,16 +63,20 @@ get.sym(TSX, sym.opt)[, c("Symbol", "Name", "category")]
 # Last screen out of top symbols
 epf <- efficient.portfolio(expected.return(sym.opt), cov.return(sym.opt), 0.07, shorts=FALSE)
 final.syms <- c("CPD.TO", "CLF.TO", "VEE.TO") # names(sort(epf$weights, decreasing=TRUE)[1:5])
+final.weights <- c(0.50, 0.30, 0.20)
 
 # Plot portfolios
 portfolio.rets <- portfolio.returns("XIU.TO", 
                                     names=c("Vanguard Equal", "Pre-Screened Equal", "Final 3"),
                                     weights=list(rep(1, length(vg.T$Symbol))/length(vg.T$Symbol),
                                               rep(1, length(T$Symbol))/length(T$Symbol),
-                                              c(0.50, 0.30, 0.20)),
+                                              final.weights),
                                     vg.T$Symbol, 
                                     T$Symbol,
                                     final.syms)
 
 charts.PerformanceSummary(portfolio.rets)
 chart.RiskReturnScatter(portfolio.rets, Rf=0.015, add.sharpe=c(1,2,3), scale=52) ## axes tick labels are wrong
+
+# Portfolio stats for final portfolio
+getPortfolio(expected.return(final.syms), cov.return(final.syms), final.weights)
