@@ -41,17 +41,17 @@ xiu.sd <- sqrt(cov.return(c("XIU.TO")))
 
 pf.vg <- globalMin.portfolio(expected.return(vg.T$Symbol), cov.return(vg.T$Symbol), shorts=FALSE)
 cat("Global MinVar Vanguard Funds:\n")
-print(sort(pf.vg$weights, decreasing=TRUE)[1:3])
+print(sort(pf.vg$weights[pf.vg$weights > 0], decreasing=TRUE))
 epf.vg <- efficient.portfolio(expected.return(vg.T$Symbol), cov.return(vg.T$Symbol), 0.07, shorts=FALSE)
 cat("Efficient MinVar Vanguard Funds:\n")
-print(sort(epf.vg$weights, decreasing=TRUE)[1:3])
+print(sort(epf.vg$weights[epf.vg$weights > 0], decreasing=TRUE))
 
 pf.T <- globalMin.portfolio(expected.return(T$Symbol), cov.return(T$Symbol), shorts=FALSE)
 cat("Global MinVar Reguar Funds:\n")
-print(sort(pf.T$weights, decreasing=TRUE)[1:3])
+print(sort(pf.T$weights[pf.T$weights > 0], decreasing=TRUE))
 epf.T <- efficient.portfolio(expected.return(T$Symbol), cov.return(T$Symbol), 0.07, shorts=FALSE)
 cat("Efficient MinVar Regular Funds:\n")
-print(sort(epf.T$weights, decreasing=TRUE)[1:3])
+print(sort(epf.T$weights[epf.T$weights > 0], decreasing=TRUE))
 
 # Union top symbols
 sym.opt <- names(sort(pf.vg$weights, decreasing=TRUE)[1:3])
@@ -62,13 +62,17 @@ get.sym(TSX, sym.opt)[, c("Symbol", "Name", "category")]
 
 # Last screen out of top symbols
 epf <- efficient.portfolio(expected.return(sym.opt), cov.return(sym.opt), 0.07, shorts=FALSE)
+final.syms <- c("CPD.TO", "CLF.TO", "VEE.TO") # names(sort(epf$weights, decreasing=TRUE)[1:5])
 
 # Plot portfolios
 portfolio.rets <- portfolio.returns("XIU.TO", 
                                     names=c("Vanguard Equal", "Pre-Screened Equal", "Final 3"),
+                                    weights=list(rep(1, length(vg.T$Symbol))/length(vg.T$Symbol),
+                                              rep(1, length(T$Symbol))/length(T$Symbol),
+                                              c(0.50, 0.30, 0.20)),
                                     vg.T$Symbol, 
                                     T$Symbol,
-                                    names(sort(epf$weights, decreasing=TRUE)[1:3]))
+                                    final.syms)
 
 charts.PerformanceSummary(portfolio.rets)
 chart.RiskReturnScatter(portfolio.rets, Rf=0.015, add.sharpe=c(1,2,3), scale=52) ## axes tick labels are wrong
