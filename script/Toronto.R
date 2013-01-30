@@ -84,3 +84,9 @@ chart.RiskReturnScatter(portfolio.rets, Rf=0.015, add.sharpe=c(1,2,3), scale=52)
 
 ## Portfolio stats for final portfolio
 getPortfolio(expected.return(final.syms), cov.return(final.syms), final.weights)
+
+# Charts
+
+candleChart(CPD.TO, multi.col=TRUE, theme="white")
+candleChart(CLF.TO, multi.col=TRUE, theme="white")
+candleChart(VEE.TO, multi.col=TRUE, theme="white")
