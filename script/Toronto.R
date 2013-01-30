@@ -32,7 +32,7 @@ plot.profiles(TSX, "Canadian ETFs")
 vg.T <- subset(TSX, fund.family == "Vanguard Investments Canada Inc")
 
 T <- screen.etf(TSX)
-plot.profiles(T, "TSX Screened Funds")
+plot.profiles(T, "TSX Pre-Screened Funds")
 
 ## Load quotes data
 load.quotes(T$Symbol)
