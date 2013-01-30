@@ -90,10 +90,10 @@ final.weights <- c(0.80, 0.20)
 
 # Plot portfolios
 portfolio.rets <- portfolio.returns("ISF.L", 
-                                    names=c("Screened Equal", "Final", "Vangards"),
+                                    names=c("Screened Equal", "Final"),
                                     weights=list(rep(1, length(L$Symbol))/length(L$Symbol),
-                                                 final.weights, final.weights),
-                                    L$Symbol, final.syms, final.vg.syms)
+                                                 final.weights),
+                                    L$Symbol, final.syms)
 
 charts.PerformanceSummary(portfolio.rets)
 chart.RiskReturnScatter(portfolio.rets, Rf=0.015, add.sharpe=c(1,2,3), scale=52) ## axes tick labels are wrong
