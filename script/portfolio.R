@@ -13,6 +13,13 @@ cov.return <- function(symbols) {
   cov(ret)
 }
 
+sharpe <- function(symbols) {
+  ret <- align.xts(symbols, FUN=weeklyReturn)
+  mu <- colMeans(ret)
+  sd <- apply(ret, 2, sd)
+  mu / sd
+}
+
 # Calculates weighted returns of specified symbols
 portfolio.return <- function(symbols, periodReturn=weeklyReturn, weights=NULL, ...) {
   source('script/util.R', local=TRUE)
