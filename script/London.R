@@ -83,7 +83,7 @@ epf <- efficient.portfolio(expected.return(sym.opt), cov.return(sym.opt), 0.08, 
 sort(epf$weights[epf$weights > 0], decreasing=TRUE)
 get.sym(LSE, names(sort(epf$weights[epf$weights > 0], decreasing=TRUE)))[, c("Symbol", "Name", "category")]  # print final funds
 
-final.syms <- c("IGLT.L", "MIDD.L")
+final.syms <- c("IGLS.L", "MIDD.L")
 final.vg.syms <- c("VGOV.L", "VWRL.L")
 final.weights <- c(0.80, 0.20)
 
