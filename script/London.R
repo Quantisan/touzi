@@ -26,7 +26,6 @@ fetch.symbols <- function(url) {
 }
 
 scrape.symbols <- function() {
-  url <- "http://www.londonstockexchange.com/exchange/prices-and-markets/ETFs/ETFs.html?&page=1"
   Table <- data.frame()
   for(i in 1:max.paginate) {
     Sys.sleep(0.2)
@@ -44,9 +43,9 @@ scrape.symbols <- function() {
 }
 
 LSE <- load.symbols("data/London_symbols.RData", scrape.symbols)
-LSE <- subset(LSE, type == "Exchange Traded Fund" & avg.trading.value > 0 # skip inactive ETFs
-              & currency %in% c("GBX", "GBP"))
+LSE <- subset(LSE, type == "Exchange Traded Fund" & avg.trading.value > 0) # skip inactive ETFs
 plot.profiles(LSE, "London ETFs")
+LSE <- subset(LSE, currency %in% c("GBX", "GBP"))
 vg.L <- subset(LSE, fund.family == "Vanguard Group (Ireland) Limited")
 
 L <- screen.etf(LSE)
@@ -84,12 +83,12 @@ epf <- efficient.portfolio(expected.return(sym.opt), cov.return(sym.opt), 0.08, 
 sort(epf$weights[epf$weights > 0], decreasing=TRUE)
 get.sym(LSE, names(sort(epf$weights[epf$weights > 0], decreasing=TRUE)))[, c("Symbol", "Name", "category")]  # print final funds
 
-final.syms <- c("IGLS.L", "MIDD.L")
+final.syms <- c("IGLT.L", "MIDD.L")
 final.vg.syms <- c("VGOV.L", "VWRL.L")
 final.weights <- c(0.80, 0.20)
 
 # Plot portfolios
-portfolio.rets <- portfolio.returns("ISF.L", 
+portfolio.rets <- portfolio.returns("ISF.L",
                                     names=c("Screened Equal", "Final"),
                                     weights=list(rep(1, length(L$Symbol))/length(L$Symbol),
                                                  final.weights),
@@ -101,3 +100,8 @@ chart.RiskReturnScatter(portfolio.rets, Rf=0.015, add.sharpe=c(1,2,3), scale=52)
 ## Portfolio stats for final portfolio
 getPortfolio(expected.return(final.vg.syms), cov.return(final.vg.syms), final.weights)
 getPortfolio(expected.return(final.syms), cov.return(final.syms), final.weights)
+
+# Plot
+ggplot(VWRL.L, aes(index(VWRL.L), adjusted)) + geom_line() + geom_smooth(method = glm)
+ggplot(IGLT.L, aes(index(IGLT.L), adjusted)) + geom_line() + geom_smooth(method = glm) + ylab("IGLT.L")
+ggplot(IGLS.L, aes(index(IGLS.L), adjusted)) + geom_line() + geom_smooth(method = glm) + ylab("IGLS.L")
