@@ -6,6 +6,17 @@ Touzi recommends ETFs to watch for asset allocation to optimise non-systematic r
 
 Furthermore, this is made available for informational purpose only and should not be construed as investment advice.
 
+Update: the web pages where this scrapes from seem to have changed so the scraper needs updating for this to work.
+
+# Dependencies
+
+XML
+quantmod
+ggplot2
+quadprog
+PerformanceAnalytics
+RCurl
+
 # Usage
 
 ## London Stock Exchange
